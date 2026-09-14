@@ -1,0 +1,886 @@
+{% extends "main.html" %}
+
+<!-- The landing page: a hero above docs/README.md, which renders below it as usual.
+     scripts/mkdocs_landing.py selects this template; the Markdown is untouched. -->
+
+{% block extrahead %}
+  {{ super() }}
+  <style>
+    :root {
+      --flexo-hero-from: #00463f;
+      --flexo-hero-to:   #00796b;
+    }
+    [data-md-color-scheme="slate"] {
+      --flexo-hero-from: #06201d;
+      --flexo-hero-to:   #00463f;
+    }
+
+    .flexo-hero {
+      background: linear-gradient(120deg, var(--flexo-hero-from), var(--flexo-hero-to));
+      color: #fff;
+      padding: 3.6rem 0 3.2rem;
+    }
+    /* 61rem is Material's own .md-grid width, so every band lines up with the
+       documentation below. Widths are definite so long code lines scroll their own
+       box instead of widening the page. */
+    .flexo-hero__inner,
+    .flexo-features,
+    .flexo-install,
+        .flexo-arch__inner,
+    .flexo-strip__inner {
+      width: 100%;
+      max-width: 61rem;
+      margin: 0 auto;
+    }
+
+    .flexo-hero__inner {
+      padding: 0 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.4rem;
+      align-items: center;
+    }
+    /* min-width: 0 lets a pane's long lines scroll inside the terminal, not widen the page. */
+    .flexo-hero__inner > *,
+    .flexo-pane {
+      min-width: 0;
+    }
+    .flexo-hero__eyebrow {
+      font-size: .68rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: .8;
+      margin: 0 0 .5rem;
+    }
+    .flexo-hero h1 {
+      color: #fff;
+      font-size: 1.9rem;
+      line-height: 1.2;
+      font-weight: 700;
+      margin: 0 0 .7rem;
+    }
+    .flexo-hero__lede {
+      font-size: .84rem;
+      line-height: 1.7;
+      opacity: .92;
+      margin: 0 0 1.4rem;
+    }
+    .flexo-hero__actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      margin-bottom: 1.2rem;
+    }
+    /* Material's own .md-button is scoped to .md-typeset, which the hero is not. */
+    .flexo-btn {
+      display: inline-block;
+      padding: .55rem 1.1rem;
+      border: 1px solid #fff;
+      border-radius: .2rem;
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      transition: background-color .2s, color .2s, border-color .2s;
+    }
+    .flexo-btn--primary {
+      background: #fff;
+      color: var(--flexo-hero-from);
+    }
+    .flexo-btn:focus,
+    .flexo-btn:hover {
+      background: var(--md-accent-fg-color);
+      border-color: var(--md-accent-fg-color);
+      color: #fff;
+    }
+    .flexo-hero__meta {
+      font-size: .66rem;
+      opacity: .8;
+      margin: 0;
+    }
+    .flexo-hero__meta a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    /* The showcase: one terminal of fixed height whose panes (real sessions) share a
+       grid cell, so every slide is the same size as they rotate. A wide or tall
+       transcript scrolls both ways behind hidden scrollbars; the caption floats over
+       the bottom of the pane. A pane prints itself when it comes up. Without script the
+       first pane shows, complete. */
+    .flexo-terminal {
+      background: rgba(0, 0, 0, .38);
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: .35rem;
+      overflow: hidden;
+      box-shadow: 0 .6rem 1.6rem rgba(0, 0, 0, .3);
+    }
+    .flexo-terminal__bar {
+      display: flex;
+      align-items: center;
+      gap: .32rem;
+      padding: .5rem .7rem;
+      background: rgba(255, 255, 255, .08);
+    }
+    .flexo-terminal__bar span:not(.flexo-terminal__title) {
+      width: .5rem;
+      height: .5rem;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .35);
+    }
+    .flexo-terminal__title {
+      flex: 1;
+      margin-left: .4rem;
+      font-size: .6rem;
+      letter-spacing: .02em;
+      text-align: center;
+      opacity: .7;
+    }
+    .flexo-terminal__panes {
+      display: grid;
+      height: 22rem;
+    }
+    .flexo-pane {
+      grid-area: 1 / 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity .35s;
+    }
+    .flexo-pane.is-active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .flexo-terminal pre {
+      flex: 1;
+      min-height: 0;
+      margin: 0;
+      padding: .9rem 1rem 2.6rem;
+      font-size: .62rem;
+      line-height: 1.65;
+      color: #e0f2f1;
+      overflow: auto;
+      scrollbar-width: none;
+    }
+    .flexo-terminal pre::-webkit-scrollbar {
+      display: none;
+    }
+    .flexo-pane.is-printing code::after {
+      content: "";
+      display: inline-block;
+      width: .5em;
+      height: 1em;
+      margin-left: .05em;
+      vertical-align: -.15em;
+      background: #e0f2f1;
+      animation: flexo-blink 1s steps(1) infinite;
+    }
+    @keyframes flexo-blink {
+      50% { opacity: 0; }
+    }
+    .flexo-terminal .flexo-prompt { color: #90caf9; }
+    .flexo-terminal .flexo-ok     { color: #a5d6a7; }
+    .flexo-terminal .flexo-err    { color: #ef9a9a; }
+    .flexo-terminal .flexo-dim    { opacity: .68; }
+    .flexo-terminal .flexo-hl     { color: #ffe082; }
+    .flexo-showcase__tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      margin: .7rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .flexo-showcase__tab {
+      padding: .3rem .6rem;
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 1rem;
+      background: transparent;
+      color: #fff;
+      font: inherit;
+      font-size: .62rem;
+      line-height: 1.3;
+      cursor: pointer;
+      opacity: .8;
+      transition: background-color .2s, border-color .2s, opacity .2s;
+    }
+    .flexo-showcase__tab:hover,
+    .flexo-showcase__tab:focus-visible {
+      opacity: 1;
+      border-color: #fff;
+    }
+    .flexo-showcase__tab[aria-selected="true"] {
+      opacity: 1;
+      background: #fff;
+      border-color: #fff;
+      color: var(--flexo-hero-from);
+    }
+    .flexo-pane__more {
+      position: absolute;
+      right: .7rem;
+      bottom: .6rem;
+      padding: .3rem .7rem;
+      border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 1rem;
+      background: rgba(6, 40, 36, .85);
+      font-size: .62rem;
+      color: #fff;
+      opacity: .85;
+      text-decoration: underline;
+      transition: opacity .2s, border-color .2s;
+    }
+    .flexo-pane__more:hover,
+    .flexo-pane__more:focus {
+      opacity: 1;
+      border-color: #fff;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .flexo-pane { transition: none; }
+    }
+
+    /* The architecture band: the layers, each a card linking to its page. */
+    .flexo-arch {
+      background: var(--md-code-bg-color);
+      border-bottom: 1px solid var(--md-default-fg-color--lightest);
+    }
+    .flexo-arch__inner {
+      padding: 2.4rem 1.2rem 2.2rem;
+    }
+    .flexo-arch__eyebrow {
+      font-size: .64rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--md-primary-fg-color);
+      font-weight: 700;
+      margin: 0 0 .4rem;
+    }
+    .flexo-arch h2 {
+      font-size: 1.1rem;
+      margin: 0 0 .5rem;
+    }
+    .flexo-arch__lede,
+    .flexo-arch__note {
+      font-size: .7rem;
+      line-height: 1.65;
+      color: var(--md-default-fg-color--light);
+      margin: 0 0 1.2rem;
+      max-width: 44rem;
+    }
+    .flexo-arch__note {
+      margin: 1.2rem 0 0;
+    }
+    .flexo-arch__note a {
+      color: var(--md-typeset-a-color);
+      text-decoration: underline;
+    }
+    .flexo-arch__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+      gap: .8rem;
+    }
+    .flexo-arch__layer {
+      display: block;
+      padding: .9rem 1rem;
+      background: var(--md-default-bg-color);
+      border: 1px solid var(--md-default-fg-color--lightest);
+      border-radius: .35rem;
+      color: inherit;
+      transition: border-color .2s, transform .2s;
+    }
+    a.flexo-arch__layer:hover {
+      border-color: var(--md-accent-fg-color);
+      transform: translateY(-2px);
+    }
+    .flexo-arch__title {
+      display: block;
+      font-size: .84rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--md-primary-fg-color);
+    }
+    .flexo-arch__label {
+      display: block;
+      margin-top: .3rem;
+      font-size: .66rem;
+      line-height: 1.55;
+      color: var(--md-default-fg-color--light);
+    }
+    .flexo-arch__tier {
+      display: block;
+      font-size: .6rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--md-default-fg-color--light);
+      margin-bottom: .2rem;
+    }
+    .flexo-arch__parts {
+      display: block;
+      margin-top: .5rem;
+      font-size: .64rem;
+      line-height: 1.5;
+    }
+    .flexo-arch__parts code {
+      font-size: .9em;
+    }
+
+    .flexo-features {
+      padding: 2.6rem 1.2rem .4rem;
+    }
+    .flexo-features h2 {
+      font-size: 1.1rem;
+      margin: 0 0 1.2rem;
+    }
+    .flexo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr));
+      gap: 1rem;
+    }
+    .flexo-card {
+      display: block;
+      padding: 1rem 1.1rem;
+      border: 1px solid var(--md-default-fg-color--lightest);
+      border-radius: .35rem;
+      color: inherit;
+      transition: border-color .2s, transform .2s, box-shadow .2s;
+    }
+    a.flexo-card:hover {
+      border-color: var(--md-accent-fg-color);
+      transform: translateY(-2px);
+      box-shadow: 0 .3rem .9rem var(--md-default-fg-color--lightest);
+    }
+    .flexo-card h3 {
+      font-size: .78rem;
+      margin: 0 0 .35rem;
+      font-weight: 700;
+    }
+    .flexo-card p {
+      font-size: .7rem;
+      line-height: 1.6;
+      margin: 0;
+      color: var(--md-default-fg-color--light);
+    }
+    /* A card whose heading is the link carries a row of per-client references too,
+       which a card that is itself one <a> could not hold. */
+    .flexo-card h3 a {
+      color: inherit;
+    }
+    .flexo-card__links {
+      margin-top: .5rem;
+      font-size: .66rem;
+    }
+
+    .flexo-strip {
+      border-top: 1px solid var(--md-default-fg-color--lightest);
+      border-bottom: 1px solid var(--md-default-fg-color--lightest);
+      margin-top: 2.4rem;
+    }
+    .flexo-strip__inner {
+      padding: 1.6rem 1.2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+      gap: 1.2rem;
+    }
+    .flexo-strip h3 {
+      font-size: .74rem;
+      margin: 0 0 .3rem;
+    }
+    .flexo-strip p {
+      font-size: .68rem;
+      line-height: 1.6;
+      margin: 0;
+      color: var(--md-default-fg-color--light);
+    }
+
+    .flexo-install {
+      padding: 2.4rem 1.2rem 0;
+    }
+    .flexo-install h2 {
+      font-size: 1.1rem;
+      margin: 0 0 .9rem;
+    }
+    .flexo-install pre {
+      background: var(--md-code-bg-color);
+      color: var(--md-code-fg-color);
+      border-radius: .3rem;
+      padding: .9rem 1rem;
+      font-size: .68rem;
+      line-height: 1.7;
+      overflow-x: auto;
+      margin: 0 0 .6rem;
+    }
+    .flexo-install p {
+      font-size: .7rem;
+      color: var(--md-default-fg-color--light);
+    }
+
+    @media screen and (max-width: 59.9375em) {
+      .flexo-hero__inner { grid-template-columns: 1fr; }
+      .flexo-hero h1 { font-size: 1.55rem; }
+    }
+  </style>
+{% endblock %}
+
+{% block hero %}
+<section class="flexo-hero">
+  <div class="flexo-hero__inner">
+    <div class="flexo-hero__copy">
+      <p class="flexo-hero__eyebrow">Open-MBEE &middot; RDF &middot; SPARQL 1.1 &middot; SysML v2 API</p>
+      <h1>Model management for models that are graphs.</h1>
+      <p class="flexo-hero__lede">
+        Flexo stores a model as RDF in a SPARQL quadstore and gives it the shape of a
+        version-controlled repository: organisations, repositories, branches, commits, locks
+        and diffs, with SPARQL to read and write and policies deciding who may. On top of
+        that one store it serves the OMG SysML v2 API and Services, so standard modelling
+        tools get real branching and history without knowing what is underneath &mdash; and
+        around it are a git-style CLI, MCP servers for AI assistants, Python clients and a
+        web modeler.
+      </p>
+      <div class="flexo-hero__actions">
+        <a class="flexo-btn flexo-btn--primary" href="{{ 'getting-started/'|url }}">Get started</a>
+        <a class="flexo-btn" href="{{ 'architecture/'|url }}">Architecture</a>
+        <a class="flexo-btn" href="{{ 'services/'|url }}">Services</a>
+        <a class="flexo-btn" href="{{ 'tools/'|url }}">Clients and tools</a>
+        <a class="flexo-btn" href="https://github.com/Open-MBEE">Source</a>
+      </div>
+      <p class="flexo-hero__meta">
+        Apache-2.0 &middot; every service a container image &middot;
+        <a href="#architecture">one quadstore, one token, many services</a>
+      </p>
+    </div>
+    <div class="flexo-showcase" data-flexo-showcase>
+      <div class="flexo-terminal">
+        <div class="flexo-terminal__bar"><span></span><span></span><span></span>
+          <span class="flexo-terminal__title" data-flexo-title>flexo — Layer 1</span></div>
+        <div class="flexo-terminal__panes">
+
+<div class="flexo-pane is-active" id="flexo-pane-layer1" role="tabpanel" aria-labelledby="flexo-tab-layer1" data-title="flexo — a repository from nothing">
+<pre><code><span class="flexo-prompt">$</span> TOKEN=$(curl -su user01:password1 localhost:8082/login | jq -r .token)
+<span class="flexo-prompt">$</span> curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Content-Type: text/turtle" \
+    --data '&lt;&gt; dct:title "Open-MBEE"@en .' localhost:8080/orgs/openmbee
+<span class="flexo-ok">HTTP/1.1 200 OK</span>
+<span class="flexo-prompt">$</span> curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Content-Type: text/turtle" \
+    --data '&lt;&gt; dct:title "Rover"@en .' localhost:8080/orgs/openmbee/repos/rover
+<span class="flexo-ok">HTTP/1.1 200 OK</span>
+<span class="flexo-prompt">$</span> curl -X PUT -H "Authorization: Bearer $TOKEN" -H "Content-Type: text/turtle" \
+    --data-binary @rover.ttl localhost:8080/orgs/openmbee/repos/rover/branches/master/graph
+<span class="flexo-ok">HTTP/1.1 200 OK</span>
+<span class="flexo-dim">&lt;…/repos/rover/commits/e1a6…&gt; a mms:Commit ; mms:parent &lt;…/commits/root&gt; .</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'services/layer1/'|url }}">The Layer 1 service</a>
+</div>
+
+<div class="flexo-pane" id="flexo-pane-sparql" role="tabpanel" aria-labelledby="flexo-tab-sparql" data-title="flexo — SPARQL against a branch">
+<pre><code><span class="flexo-prompt">$</span> curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/sparql-query" \
+    --data 'SELECT ?part ?mass WHERE { ?part a :Part ; :mass ?mass } ORDER BY DESC(?mass) LIMIT 3' \
+    localhost:8080/orgs/openmbee/repos/rover/branches/master/query
+<span class="flexo-hl">part                     mass</span>
+:chassis                 <span class="flexo-ok">184.0</span>
+:powerSubsystem          <span class="flexo-ok">61.5</span>
+:roboticArm              <span class="flexo-ok">33.2</span>
+
+<span class="flexo-prompt">$</span> curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/sparql-update" \
+    --data 'DELETE { :roboticArm :mass 33.2 } INSERT { :roboticArm :mass 31.8 } WHERE {}' \
+    localhost:8080/orgs/openmbee/repos/rover/branches/master/update
+<span class="flexo-ok">HTTP/1.1 200 OK</span>
+<span class="flexo-dim">&lt;…/commits/7c02…&gt; a mms:Commit ; mms:parent &lt;…/commits/e1a6…&gt; ; mms:message "" .</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'services/layer1/'|url }}#reading-and-writing">Reading and writing</a>
+</div>
+
+<div class="flexo-pane" id="flexo-pane-sysml" role="tabpanel" aria-labelledby="flexo-tab-sysml" data-title="flexo — the SysML v2 API">
+<pre><code><span class="flexo-prompt">$</span> curl -H "Authorization: Bearer $TOKEN" localhost:8083/projects
+[{
+  <span class="flexo-hl">"@type"</span>: "Project",
+  <span class="flexo-hl">"@id"</span>: "6f1c2c1e-6a4b-4d2e-9d5e-3f7a1b9c0e21",
+  <span class="flexo-hl">"name"</span>: "Rover",
+  <span class="flexo-hl">"defaultBranch"</span>: { "@id": "b2e0…" }
+}]
+<span class="flexo-prompt">$</span> curl -H "Authorization: Bearer $TOKEN" \
+    localhost:8083/projects/6f1c2c1e-…/commits/9a3d…/elements?page[size]=2
+[{ <span class="flexo-hl">"@type"</span>: "PartDefinition", <span class="flexo-hl">"name"</span>: "Rover", <span class="flexo-dim">…</span> },
+ { <span class="flexo-hl">"@type"</span>: "PartUsage",      <span class="flexo-hl">"name"</span>: "chassis", <span class="flexo-dim">…</span> }]
+<span class="flexo-dim"># a project is a Layer 1 repository; a commit is a Layer 1 commit</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'services/sysmlv2/'|url }}">The SysML v2 API</a>
+</div>
+
+<div class="flexo-pane" id="flexo-pane-cli" role="tabpanel" aria-labelledby="flexo-tab-cli" data-title="flexo — the CLI">
+<pre><code><span class="flexo-prompt">$</span> flexo init
+<span class="flexo-dim">Starting Docker services (Fuseki, Layer 1)…</span>
+<span class="flexo-dim">Loading cluster configuration…</span>
+<span class="flexo-ok">Created org localorg, repo localrepo, branch master</span>
+<span class="flexo-dim">Defaults written to ~/.flexo/config</span>
+<span class="flexo-prompt">$</span> flexo push master --message "Initial rover model" --input rover.ttl
+<span class="flexo-prompt">$</span> flexo branch --create mass-budget
+<span class="flexo-prompt">$</span> flexo push --branch mass-budget --message "Lighter arm" --input rover-lighter.ttl
+<span class="flexo-prompt">$</span> flexo merge --source mass-budget --target master
+<span class="flexo-prompt">$</span> flexo pull master --output rover.ttl
+<span class="flexo-prompt">$</span> flexo remote add production https://mms.example.com --ssh-key ~/.ssh/id_rsa
+<span class="flexo-dim"># the same commands, against a production server, signed with your key</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'tools/cli/'|url }}">The Flexo CLI</a>
+</div>
+
+<div class="flexo-pane" id="flexo-pane-mcp" role="tabpanel" aria-labelledby="flexo-tab-mcp" data-title="flexo — an MCP server for an assistant">
+<pre><code><span class="flexo-prompt">$</span> docker run -d -p 8000:8000 -e MMS_URL=http://layer1:8080 -e READ_ONLY=true \
+    openmbee/flexo-mms-layer1-mcp
+<span class="flexo-prompt">$</span> mcp tools http://localhost:8000/mcp
+<span class="flexo-ok">read_all_orgs</span>       <span class="flexo-dim">(ctx)</span>
+<span class="flexo-ok">read_all_repos</span>      <span class="flexo-dim">(org_id)</span>
+<span class="flexo-ok">read_all_branches</span>   <span class="flexo-dim">(org_id, repo_id)</span>
+<span class="flexo-ok">read_model</span>          <span class="flexo-dim">(org_id, repo_id, branch_id)</span>
+<span class="flexo-ok">query_model</span>         <span class="flexo-dim">(org_id, repo_id, branch_id, sparql_query)</span>
+<span class="flexo-ok">query_diff</span>          <span class="flexo-dim">(org_id, repo_id, sparql_query)</span>
+<span class="flexo-ok">read_all_locks</span>      <span class="flexo-dim">(org_id, repo_id)</span>
+<span class="flexo-dim">…</span>
+<span class="flexo-dim"># READ_ONLY=false registers the load, update, lock, policy and group tools too</span>
+<span class="flexo-dim"># the caller's Authorization header is forwarded, so their own policies apply</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'tools/mcp/'|url }}">The MCP servers</a>
+</div>
+
+<div class="flexo-pane" id="flexo-pane-python" role="tabpanel" aria-labelledby="flexo-tab-python" data-title="python — the SysML v2 client">
+<pre><code><span class="flexo-prompt">&gt;&gt;&gt;</span> from sysmlv2_client import SysMLV2Client
+<span class="flexo-prompt">&gt;&gt;&gt;</span> client = SysMLV2Client("http://localhost:8083", bearer_token=f"Bearer {token}")
+<span class="flexo-prompt">&gt;&gt;&gt;</span> [p["name"] for p in client.get_projects()]
+<span class="flexo-ok">['Rover']</span>
+<span class="flexo-prompt">&gt;&gt;&gt;</span> project = client.create_project({"@type": "Project", "name": "Lander"})
+<span class="flexo-prompt">&gt;&gt;&gt;</span> commit = client.create_commit(project["@id"], {"change": [
+<span class="flexo-prompt">...</span>     {"@type": "DataVersion", "payload": {"@type": "PartDefinition", "name": "Lander"}}]})
+<span class="flexo-prompt">&gt;&gt;&gt;</span> commit["@id"]
+<span class="flexo-ok">'3f0b9d6e-…'</span>
+<span class="flexo-prompt">&gt;&gt;&gt;</span> [b["name"] for b in client.get_branches(project["@id"])]
+<span class="flexo-ok">['Initial']</span>
+</code></pre>
+<a class="flexo-pane__more" href="{{ 'tools/python/'|url }}">Python</a>
+</div>
+
+        </div>
+      </div>
+      <ul class="flexo-showcase__tabs" role="tablist" aria-label="What Flexo does">
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-layer1" aria-controls="flexo-pane-layer1" aria-selected="true">Layer 1</button></li>
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-sparql" aria-controls="flexo-pane-sparql" aria-selected="false" tabindex="-1">SPARQL</button></li>
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-sysml" aria-controls="flexo-pane-sysml" aria-selected="false" tabindex="-1">SysML v2 API</button></li>
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-cli" aria-controls="flexo-pane-cli" aria-selected="false" tabindex="-1">CLI</button></li>
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-mcp" aria-controls="flexo-pane-mcp" aria-selected="false" tabindex="-1">MCP</button></li>
+        <li role="presentation"><button class="flexo-showcase__tab" type="button" role="tab" id="flexo-tab-python" aria-controls="flexo-pane-python" aria-selected="false" tabindex="-1">Python</button></li>
+      </ul>
+    </div>
+  </div>
+</section>
+<script>
+(function () {
+  var DWELL = 4500;      // ms a pane stays once printed, before the next comes up
+  var TYPE_MS = 14;      // per character of a command, plus up to as much again of jitter
+  var LINE_MS = 30;      // per line of output
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  // Refills the pane's text nodes in place: commands typed per character, output per line;
+  // the <pre> follows the tail until the reader scrolls it.
+  function printer(pane) {
+    var pre = pane.querySelector("pre");
+    var code = pane.querySelector("pre > code");
+    var nodes = [];
+    var timer = null;
+    var follow = true;
+    if (code) {
+      var walker = document.createTreeWalker(code, NodeFilter.SHOW_TEXT, null, false);
+      var node;
+      while ((node = walker.nextNode())) {
+        nodes.push({ node: node, text: node.data, prompt: !!node.parentNode.closest(".flexo-prompt") });
+      }
+    }
+
+    function unfollow() { follow = false; }
+    if (pre) {
+      pre.addEventListener("wheel", unfollow, { passive: true });
+      pre.addEventListener("touchmove", unfollow, { passive: true });
+    }
+
+    function restore() {
+      nodes.forEach(function (n) { n.node.data = n.text; });
+    }
+
+    function cancel() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      pane.classList.remove("is-printing");
+      restore();
+    }
+
+    function run(done) {
+      cancel();
+      if (reduceMotion.matches || !nodes.length) { done(); return; }
+      nodes.forEach(function (n) { n.node.data = ""; });
+      pre.scrollTop = 0;
+      pre.scrollLeft = 0;
+      follow = true;
+      pane.classList.add("is-printing");
+      var i = 0, pos = 0, typing = false;
+
+      function step() {
+        if (i >= nodes.length) {
+          timer = null;
+          pane.classList.remove("is-printing");
+          done();
+          return;
+        }
+        var n = nodes[i], delay;
+        if (n.prompt) {
+          n.node.data = n.text;
+          pos = n.text.length;
+          typing = true;
+          delay = TYPE_MS * 6;
+        } else if (typing) {
+          var ch = n.text.charAt(pos++);
+          n.node.data += ch;
+          if (ch === "\n") typing = false;
+          delay = TYPE_MS + Math.random() * TYPE_MS;
+        } else {
+          var end = n.text.indexOf("\n", pos);
+          end = end < 0 ? n.text.length : end + 1;
+          n.node.data += n.text.slice(pos, end);
+          pos = end;
+          delay = LINE_MS;
+        }
+        if (pos >= n.text.length) { i++; pos = 0; }
+        if (follow) pre.scrollTop = pre.scrollHeight;
+        timer = setTimeout(step, delay);
+      }
+      step();
+    }
+
+    return { run: run, cancel: cancel };
+  }
+
+  function setUp(root) {
+    var tabs = Array.prototype.slice.call(root.querySelectorAll("[role=tab]"));
+    var panes = Array.prototype.slice.call(root.querySelectorAll("[role=tabpanel]"));
+    var printers = panes.map(printer);
+    var title = root.querySelector("[data-flexo-title]");
+    var current = 0;
+    var timer = null;
+    var autoplay = false;
+
+    function show(index, focus) {
+      printers[current].cancel();
+      current = (index + panes.length) % panes.length;
+      panes.forEach(function (pane, i) {
+        pane.classList.toggle("is-active", i === current);
+      });
+      tabs.forEach(function (tab, i) {
+        var active = i === current;
+        tab.setAttribute("aria-selected", active ? "true" : "false");
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      if (title) title.textContent = panes[current].dataset.title || "";
+      printers[current].run(function () { schedule(DWELL); });
+    }
+
+    function stop() {
+      autoplay = false;
+      if (timer) { clearTimeout(timer); timer = null; }
+    }
+
+    function schedule(delay) {
+      if (timer) clearTimeout(timer);
+      timer = null;
+      if (!autoplay || reduceMotion.matches) return;
+      timer = setTimeout(advance, delay);
+    }
+
+    function advance() {
+      timer = null;
+      if (!root.isConnected) { stop(); return; }
+      if (root.matches(":hover") || root.contains(document.activeElement)) { schedule(1000); return; }
+      show(current + 1, false);
+    }
+
+    tabs.forEach(function (tab, i) {
+      tab.addEventListener("click", function () { stop(); show(i, false); });
+      tab.addEventListener("keydown", function (event) {
+        var targets = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: panes.length - 1 };
+        if (typeof targets[event.key] !== "number") return;
+        event.preventDefault();
+        stop();
+        show(targets[event.key], true);
+      });
+    });
+
+    autoplay = !reduceMotion.matches;
+    show(0, false);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-flexo-showcase]"), setUp);
+})();
+</script>
+
+<section class="flexo-arch" id="architecture">
+  <div class="flexo-arch__inner">
+    <p class="flexo-arch__eyebrow">The architecture</p>
+    <h2>Small services, one contract: a SPARQL quadstore underneath, a JWT between them.</h2>
+    <p class="flexo-arch__lede">
+      Every layer talks to the one below it over a standard protocol and can be replaced or
+      scaled on its own. Each service is a repository and a container image; the
+      <a href="{{ 'architecture/'|url }}">architecture page</a> follows a request from a client
+      to the store and back.
+    </p>
+    <div class="flexo-arch__grid">
+      <a class="flexo-arch__layer" href="{{ 'tools/'|url }}">
+        <span class="flexo-arch__tier">Clients and tools</span>
+        <span class="flexo-arch__title">People and programs</span>
+        <span class="flexo-arch__label">The CLI, MCP servers, Python clients, the web modeler, and any tool built to the SysML v2 API.</span>
+        <span class="flexo-arch__parts"><code>flexo-cli-client</code> &middot; <code>flexo-mms-layer1-mcp</code> &middot; <code>sysmlv2-python-client</code> &middot; <code>sysmlv2-web-modeler</code></span>
+      </a>
+      <a class="flexo-arch__layer" href="{{ 'services/sysmlv2/'|url }}">
+        <span class="flexo-arch__tier">Layer 2</span>
+        <span class="flexo-arch__title">Domain APIs</span>
+        <span class="flexo-arch__label">The OMG SysML v2 API and Services, and GraphQL, each translated onto the layer below.</span>
+        <span class="flexo-arch__parts"><code>flexo-mms-sysmlv2</code> &middot; <code>flexo-graphql</code></span>
+      </a>
+      <a class="flexo-arch__layer" href="{{ 'services/layer1/'|url }}">
+        <span class="flexo-arch__tier">Layer 1</span>
+        <span class="flexo-arch__title">Flexo MMS</span>
+        <span class="flexo-arch__label">Orgs, repos, branches, commits, locks, diffs and policies; SPARQL query and update; large loads through the store.</span>
+        <span class="flexo-arch__parts"><code>flexo-mms-layer1-service</code> &middot; <code>flexo-mms-auth-service</code> &middot; <code>flexo-mms-store-service</code></span>
+      </a>
+      <a class="flexo-arch__layer" href="{{ 'services/deployment/'|url }}">
+        <span class="flexo-arch__tier">Layer 0</span>
+        <span class="flexo-arch__title">Storage</span>
+        <span class="flexo-arch__label">Any SPARQL 1.1 quadstore &mdash; Fuseki, GraphDB &mdash; holding models and metadata alike, an S3 bucket beside it, and a dashboard onto the graphs.</span>
+        <span class="flexo-arch__parts"><code>fuseki</code> &middot; <code>minio</code> &middot; <code>flexo-mms-layer0-dashboard</code></span>
+      </a>
+    </div>
+    <p class="flexo-arch__note">
+      Flexo is the successor to the document-oriented MMS, now
+      <a href="https://github.com/Open-MBEE/exec-mms">exec-mms</a>, and is not a drop-in
+      replacement for it: it stores RDF and versions the graph itself. Older material calls it
+      <em>MMS5</em>; the name refers to the same system.
+    </p>
+  </div>
+</section>
+
+<section class="flexo-features">
+  <h2>The services</h2>
+  <div class="flexo-grid">
+    <a class="flexo-card" href="{{ 'services/layer1/'|url }}">
+      <h3>Layer 1</h3>
+      <p>The model management API. Version control for a graph &mdash; branches, commits,
+      locks, diffs &mdash; read and written with SPARQL 1.1, guarded by policies evaluated on
+      every request.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/sysmlv2/'|url }}">
+      <h3>SysML v2 API and Services</h3>
+      <p>The OMG standard REST API over Layer 1: projects, commits, branches, tags and
+      elements, for every modelling tool that speaks it.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/auth/'|url }}">
+      <h3>Authentication</h3>
+      <p>An LDAP bind, or an OAuth2/OIDC login or API key in the SSO service, exchanged for
+      the signed JWT every other service trusts.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/store/'|url }}">
+      <h3>Store</h3>
+      <p>Large loads staged in S3-compatible storage, so the quadstore fetches a model by URL
+      instead of streaming it through the API.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/graphql/'|url }}">
+      <h3>GraphQL</h3>
+      <p>A GraphQL schema over any branch, compiled to SPARQL through a JSON-LD context,
+      with GraphiQL to explore it.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/dashboard/'|url }}">
+      <h3>Layer 0 dashboard</h3>
+      <p>An administrator's view straight onto the named graphs in the quadstore, for
+      bootstrapping and repair.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'services/deployment/'|url }}">
+      <h3>Deployment</h3>
+      <p>A Docker Compose stack for one machine and Kubernetes manifests for a cluster,
+      with the guide that documents every variable.</p>
+    </a>
+    <div class="flexo-card">
+      <h3><a href="{{ 'services/'|url }}">Every service, listed</a></h3>
+      <p>Each service is its own repository and container image under Open-MBEE.</p>
+      <p class="flexo-card__links"><a href="https://www.openmbee.org/flexo-mms-layer1-openapi/">Layer 1 API reference</a>
+      &middot; <a href="https://flexo-mms-deployment-guide.readthedocs.io/en/latest/">Deployment guide</a>
+      &middot; <a href="https://hub.docker.com/u/openmbee">Docker Hub</a></p>
+    </div>
+  </div>
+</section>
+
+<section class="flexo-features">
+  <h2>Clients and tools</h2>
+  <div class="flexo-grid">
+    <a class="flexo-card" href="{{ 'tools/cli/'|url }}">
+      <h3>Flexo CLI</h3>
+      <p><code>init</code>, <code>push</code>, <code>pull</code>, <code>branch</code>,
+      <code>merge</code>, <code>remote</code> &mdash; a Flexo repository handled like a git
+      remote, with a plugin for the SysML v2 API.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'tools/mcp/'|url }}">
+      <h3>MCP servers</h3>
+      <p>Layer 1 and the SysML v2 API as Model Context Protocol tools, read-only by default,
+      acting as the user whose token they forward.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'tools/python/'|url }}">
+      <h3>Python</h3>
+      <p>A SysML v2 API client, and <code>flexo_syside</code> to move SysML v2 textual notation
+      in and out of Flexo through SysIDE.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'tools/web-modeler/'|url }}">
+      <h3>SysML v2 Web Modeler</h3>
+      <p>Graphical rendering and textual editing of SysML v2 in the browser, against any
+      SysML v2 API, standalone or embedded in JupyterLab.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'tools/libraries/'|url }}">
+      <h3>Libraries and integrations</h3>
+      <p>The Flexo MMS ontology, the Jama requirements SDK, model-based pull requests, and
+      a performance test suite.</p>
+    </a>
+    <a class="flexo-card" href="https://opensysml.org/">
+      <h3>OpenSysML</h3>
+      <p>Open-MBEE's SysML v2 toolchain &mdash; parser, validator, runtime, LSP &mdash; which
+      exports the RDF that Flexo stores.</p>
+    </a>
+  </div>
+</section>
+
+<section class="flexo-install">
+  <h2>Get started</h2>
+<pre><code># Flexo MMS: LDAP, Fuseki, MinIO, and the Auth, Store and Layer 1 services
+git clone https://github.com/Open-MBEE/flexo-mms-deployment.git
+cd flexo-mms-deployment/docker-compose &amp;&amp; docker compose up
+
+# The SysML v2 API, with its Flexo MMS prerequisites
+git clone https://github.com/Open-MBEE/flexo-mms-sysmlv2.git
+cd flexo-mms-sysmlv2 &amp;&amp; docker compose -f docker-compose/docker-compose.yml up -d
+</code></pre>
+  <p>Layer 1 answers on <code>localhost:8080</code> and the SysML v2 API on
+  <code>localhost:8083</code>; the <a href="{{ 'getting-started/'|url }}">getting started</a>
+  page has the first requests, and the
+  <a href="{{ 'services/deployment/'|url }}">deployment page</a> covers Kubernetes.</p>
+</section>
+
+<section class="flexo-strip">
+  <div class="flexo-strip__inner">
+    <div>
+      <h3><a href="{{ 'architecture/'|url }}">How it fits together</a></h3>
+      <p>The layers, what each service is for, and how a request travels from a client to the
+      quadstore and back.</p>
+    </div>
+    <div>
+      <h3><a href="https://github.com/Open-MBEE">On GitHub</a></h3>
+      <p>Every service, client and tool is a repository under Open-MBEE, Apache-2.0 licensed,
+      developed in the open.</p>
+    </div>
+    <div>
+      <h3><a href="{{ 'community/'|url }}">Community</a></h3>
+      <p>Slack, the mailing list and the wiki &mdash; where Flexo is discussed and how to
+      contribute.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

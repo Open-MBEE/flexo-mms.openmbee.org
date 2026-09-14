@@ -1,0 +1,88 @@
+/* The header menu (overrides/partials/menu.html). The button borrows the theme's own
+   .md-header__button sizing; only the panel below it is styled here. */
+
+.flexo-menu {
+  position: relative;
+}
+
+/* The disclosure triangle would sit beside the icon. */
+.flexo-menu > summary {
+  display: block;
+  list-style: none;
+  cursor: pointer;
+}
+.flexo-menu > summary::-webkit-details-marker {
+  display: none;
+}
+
+.flexo-menu__list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 4;
+  min-width: 10rem;
+  /* A narrow screen has less room than the panel's minimum would take. */
+  max-width: calc(100vw - 1rem);
+  padding: 0.3rem 0;
+  background: var(--md-default-bg-color);
+  border-radius: 0.2rem;
+  box-shadow: var(--md-shadow-z2);
+}
+
+.flexo-menu__list a {
+  display: block;
+  padding: 0.5rem 0.9rem;
+  color: var(--md-default-fg-color);
+  font-size: 0.7rem;
+  white-space: nowrap;
+}
+.flexo-menu__list a:focus,
+.flexo-menu__list a:hover {
+  background: var(--md-default-fg-color--lightest);
+  color: var(--md-accent-fg-color);
+}
+
+.flexo-menu__list hr {
+  height: 1px;
+  margin: 0.3rem 0;
+  border: 0;
+  background: var(--md-default-fg-color--lightest);
+}
+
+/* Below the theme's drawer breakpoint the header already has one menu button, so this
+   one gives way to the same links in a row above the footer (overrides/main.html). */
+.flexo-footer-menu {
+  display: none;
+  background: var(--md-footer-bg-color);
+  color: var(--md-footer-fg-color--light);
+}
+.flexo-footer-menu__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 1rem;
+  padding: 0.8rem 0.8rem 0;
+}
+.flexo-footer-menu a {
+  font-size: 0.7rem;
+  color: inherit;
+}
+.flexo-footer-menu a:focus,
+.flexo-footer-menu a:hover {
+  color: var(--md-footer-fg-color);
+}
+.flexo-footer-menu hr {
+  width: 1px;
+  height: 0.8rem;
+  margin: 0;
+  border: 0;
+  background: var(--md-footer-fg-color--lighter);
+}
+@media screen and (max-width: 76.1875em) {
+  .flexo-menu {
+    display: none;
+  }
+  .flexo-footer-menu {
+    display: block;
+  }
+}
