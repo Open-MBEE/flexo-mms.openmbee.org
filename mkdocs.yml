@@ -6,7 +6,7 @@ site_description: A graph-native model management system from Open-MBEE — vers
 site_url: https://flexo.openmbee.org/
 repo_url: https://github.com/Open-MBEE/flexo.openmbee.org
 repo_name: Open-MBEE/flexo.openmbee.org
-edit_uri: edit/main/docs/
+edit_uri: edit/develop/docs/
 copyright: >-
   Apache-2.0
   <span class="flexo-affiliation">part of <a href="https://www.openmbee.org/">Open-MBEE</a>,
