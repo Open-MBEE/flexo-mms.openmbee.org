@@ -2,7 +2,7 @@
 # client and tool that makes it up. Each project keeps its own documentation in its own
 # repository; this site is where a reader starts and is pointed onward.
 site_name: Flexo
-site_description: A graph-native model management system from Open-MBEE — versioned RDF model storage with SPARQL, the SysML v2 API and Services on top, and the clients and tools around them
+site_description: Open-MBEE's architecture for model management — Flexo MMS, the microservices that version RDF models with SPARQL, the SysML v2 API and Services on top, and the clients and tools around them
 site_url: https://flexo.openmbee.org/
 repo_url: https://github.com/Open-MBEE/flexo.openmbee.org
 repo_name: Open-MBEE/flexo.openmbee.org

@@ -1,10 +1,12 @@
 # Flexo
 
-Flexo is Open-MBEE's model management system: a version-controlled store for model data
-whose native form is RDF, so a model is a graph other tools can query, diff and merge
-rather than a file they have to parse. It is built as a set of small services that share
-one contract — a SPARQL 1.1 quadstore underneath, JSON Web Tokens between them — and
-each service lives in its own repository with its own documentation. This site is the map.
+Flexo is [Open-MBEE](https://www.openmbee.org/)'s architecture for model management. At
+its centre is **Flexo MMS**, a collection of microservices that make up a
+version-controlled store for model data whose native form is RDF, so a model is a graph
+other tools can query, diff and merge rather than a file they have to parse. Around it are
+domain APIs, clients and tools that share one contract — a SPARQL 1.1 quadstore
+underneath, JSON Web Tokens between them — and each lives in its own repository with its
+own documentation. This site is the map.
 
 ## Where to go
 
@@ -31,11 +33,11 @@ or both.
 The SysML v2 API translates onto Layer 1, so a SysML v2 project is a Layer 1 repository
 and a SysML v2 commit is a Layer 1 commit: the same history, reachable either way.
 
-## Flexo and the earlier MMS
+## Flexo MMS and the earlier MMS
 
-Flexo is not a drop-in replacement for the earlier, document-oriented MMS (now
+Flexo MMS is not a drop-in replacement for the earlier, document-oriented MMS (now
 [exec-mms](https://github.com/Open-MBEE/exec-mms)), which stores JSON documents and is
 documented at
 [mms-reference-implementation.readthedocs.io](https://mms-reference-implementation.readthedocs.io/en/latest/index.html).
-Flexo stores RDF and versions the graph itself. Older repositories, images and documents
-still call it *MMS5*; the two names refer to the same system.
+Flexo MMS stores RDF and versions the graph itself. Older repositories, images and documents
+still call it *MMS5*; the two names refer to the same services.

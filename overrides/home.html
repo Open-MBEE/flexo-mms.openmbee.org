@@ -391,13 +391,13 @@
       <p class="flexo-hero__eyebrow">Open-MBEE &middot; RDF &middot; SPARQL 1.1 &middot; SysML v2 API</p>
       <h1>Model management for models that are graphs.</h1>
       <p class="flexo-hero__lede">
-        Flexo stores a model as RDF in a SPARQL quadstore and gives it the shape of a
+        Flexo is Open-MBEE's architecture for model management. At its core, Flexo MMS
+        stores a model as RDF in a SPARQL quadstore and gives it the shape of a
         version-controlled repository: organisations, repositories, branches, commits, locks
         and diffs, with SPARQL to read and write and policies deciding who may. On top of
-        that one store it serves the OMG SysML v2 API and Services, so standard modelling
-        tools get real branching and history without knowing what is underneath &mdash; and
-        around it are a git-style CLI, MCP servers for AI assistants, Python clients and a
-        web modeler.
+        that one store sit the OMG SysML v2 API and Services, so standard modelling tools get
+        real branching and history without knowing what is underneath &mdash; and around it
+        a git-style CLI, MCP servers for AI assistants, Python clients and a web modeler.
       </p>
       <div class="flexo-hero__actions">
         <a class="flexo-btn flexo-btn--primary" href="{{ 'getting-started/'|url }}">Get started</a>
@@ -553,10 +553,10 @@
       </a>
     </div>
     <p class="flexo-arch__note">
-      Flexo is the successor to the document-oriented MMS, now
+      Flexo MMS succeeds the document-oriented MMS, now
       <a href="https://github.com/Open-MBEE/exec-mms">exec-mms</a>, and is not a drop-in
       replacement for it: it stores RDF and versions the graph itself. Older material calls it
-      <em>MMS5</em>; the name refers to the same system.
+      <em>MMS5</em>; the name refers to the same services.
     </p>
   </div>
 </section>
@@ -638,11 +638,6 @@
       <h3>Libraries and integrations</h3>
       <p>The Flexo MMS ontology, the Jama requirements SDK, model-based pull requests, and
       a performance test suite.</p>
-    </a>
-    <a class="flexo-card" href="https://opensysml.org/">
-      <h3>OpenSysML</h3>
-      <p>Open-MBEE's SysML v2 toolchain &mdash; parser, validator, runtime, LSP &mdash; which
-      exports the RDF that Flexo stores.</p>
     </a>
   </div>
 </section>

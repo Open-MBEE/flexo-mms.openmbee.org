@@ -8,6 +8,9 @@ them.
 
 ## Flexo MMS
 
+The collection of microservices at the centre of the architecture: the versioned RDF
+store and the services that stand directly beside it.
+
 | Service | Role | Repository |
 | --- | --- | --- |
 | [Layer 1](layer1.md) | The model management API: orgs, repos, branches, locks, commits, diffs, policies; SPARQL query and update | [flexo-mms-layer1-service](https://github.com/Open-MBEE/flexo-mms-layer1-service) |

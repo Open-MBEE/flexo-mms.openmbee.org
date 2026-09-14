@@ -1,7 +1,9 @@
 # Architecture
 
-Flexo is layered. Each layer has one job, talks to the layer below over a standard
-protocol, and can be replaced or scaled without the others knowing.
+Flexo is Open-MBEE's architecture for model management, and it is layered: each layer
+has one job, talks to the layer below over a standard protocol, and can be replaced or
+scaled without the others knowing. Flexo MMS, the collection of microservices at Layer 1,
+is the part that gives a graph version control; everything else is built onto it.
 
 ```mermaid
 flowchart TB
@@ -63,8 +65,10 @@ administrator's view straight onto the named graphs.
 
 ## Layer 1 — Flexo MMS
 
-[Layer 1](services/layer1.md) is the model management system proper. It gives the graph
-a version-control shape:
+Flexo MMS is the collection of microservices at this layer: the
+[Layer 1 service](services/layer1.md), the [Auth service](services/auth.md) and the
+[Store service](services/store.md). The Layer 1 service is the model management system
+proper. It gives the graph a version-control shape:
 
 - **Organisations** own **repositories**; a repository has **branches**; a branch is a
   sequence of **commits**, each a SPARQL update applied to the model graph of its parent.
