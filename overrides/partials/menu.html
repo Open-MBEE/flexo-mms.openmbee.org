@@ -1,0 +1,11 @@
+<!-- The header menu: site sections and the Open-MBEE sites. A `details` element, so it
+     opens with the keyboard and needs no script. Below the theme's drawer breakpoint the
+     button is hidden and the footer shows the same links. -->
+<details class="flexo-menu">
+  <summary class="md-header__button md-icon" title="Menu" aria-label="Menu">
+    {% include ".icons/material/menu.svg" %}
+  </summary>
+  <nav class="flexo-menu__list" aria-label="Menu">
+    {% include "partials/menu-links.html" %}
+  </nav>
+</details>

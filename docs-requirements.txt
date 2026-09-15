@@ -1,0 +1,3 @@
+# The site toolchain, pinned so a local `make serve` renders what the Pages workflow publishes.
+mkdocs==1.6.1
+mkdocs-material==9.7.7

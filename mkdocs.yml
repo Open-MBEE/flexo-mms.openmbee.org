@@ -1,0 +1,109 @@
+# The Flexo site: a landing page for the Flexo architecture and a map of every service,
+# client and tool that makes it up. Each project keeps its own documentation in its own
+# repository; this site is where a reader starts and is pointed onward.
+site_name: Flexo
+site_description: Open-MBEE's architecture for model management — Flexo MMS, the microservices that version RDF models with SPARQL, the SysML v2 API and Services on top, and the clients and tools around them
+site_url: https://flexo-mms.openmbee.org/
+repo_url: https://github.com/Open-MBEE/flexo-mms.openmbee.org
+repo_name: Open-MBEE/flexo-mms.openmbee.org
+edit_uri: edit/develop/docs/
+copyright: >-
+  Apache-2.0
+  <span class="flexo-affiliation">part of <a href="https://www.openmbee.org/">Open-MBEE</a>,
+  a <a href="https://numfocus.org">NumFOCUS</a> project</span>
+
+docs_dir: docs
+
+theme:
+  name: material
+  custom_dir: overrides
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - navigation.indexes
+    - content.code.copy
+    - content.action.edit
+    - search.highlight
+    - search.suggest
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+extra_css:
+  - stylesheets/nav-menu.css
+  - stylesheets/footer.css
+
+plugins:
+  - search
+
+# landing: docs/README.md is rendered with the landing page template.
+hooks:
+  - scripts/mkdocs_landing.py
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+  links:
+    absolute_links: warn
+    unrecognized_links: warn
+    anchors: warn
+
+nav:
+  - Overview: README.md
+  - Architecture: architecture.md
+  - Getting started: getting-started.md
+  - Services:
+      - services/README.md
+      - Layer 1: services/layer1.md
+      - Store: services/store.md
+      - Authentication: services/auth.md
+      - SysML v2 API: services/sysmlv2.md
+      - GraphQL: services/graphql.md
+      - Layer 0 dashboard: services/dashboard.md
+      - Deployment: services/deployment.md
+  - Clients and tools:
+      - tools/README.md
+      - Flexo CLI: tools/cli.md
+      - MCP servers: tools/mcp.md
+      - Python: tools/python.md
+      - SysML v2 Web Modeler: tools/web-modeler.md
+      - Libraries and integrations: tools/libraries.md
+  - Community: community.md
