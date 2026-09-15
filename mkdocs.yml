@@ -4,8 +4,8 @@
 site_name: Flexo
 site_description: Open-MBEE's architecture for model management — Flexo MMS, the microservices that version RDF models with SPARQL, the SysML v2 API and Services on top, and the clients and tools around them
 site_url: https://flexo-mms.openmbee.org/
-repo_url: https://github.com/Open-MBEE/flexo.openmbee.org
-repo_name: Open-MBEE/flexo.openmbee.org
+repo_url: https://github.com/Open-MBEE/flexo-mms.openmbee.org
+repo_name: Open-MBEE/flexo-mms.openmbee.org
 edit_uri: edit/develop/docs/
 copyright: >-
   Apache-2.0

@@ -15,8 +15,8 @@ concurrency:
 jobs:
   build:
     name: Site
-    # Published from Open-MBEE/flexo.openmbee.org; a fork would deploy the same pages under its own domain.
-    if: github.repository == 'Open-MBEE/flexo.openmbee.org'
+    # Published from Open-MBEE/flexo-mms.openmbee.org; a fork would deploy the same pages under its own domain.
+    if: github.repository == 'Open-MBEE/flexo-mms.openmbee.org'
     runs-on: ubuntu-latest
     permissions:
       contents: read

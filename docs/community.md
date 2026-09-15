@@ -20,7 +20,7 @@ Every service is its own repository under the
 and pull requests go to the repository concerned. Most repositories follow git-flow: work
 is branched from and merged to `develop`, and `main` or `master` holds releases.
 
-This site is the [flexo.openmbee.org](https://github.com/Open-MBEE/flexo.openmbee.org)
+This site is the [flexo-mms.openmbee.org](https://github.com/Open-MBEE/flexo-mms.openmbee.org)
 repository — plain Markdown under `docs/`, rendered by MkDocs. Every page carries an edit
 link; a pull request that fixes a description or adds a project is welcome.
 
