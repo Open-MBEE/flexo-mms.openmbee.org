@@ -58,6 +58,22 @@ starts Fuseki and Layer 1 in Docker, loads the cluster configuration, creates a 
 organisation, repository and branch, and writes `~/.flexo/config`; after that, `push`,
 `pull`, `branch`, `merge` and `remote` work the way they do in git.
 
+## From CI
+
+The [Flexo Change Adapter](tools/change-adapter.md) turns commits on a Layer 1 branch into
+CI runs. One JSON file names the branch to poll and the actions to take on each change —
+validate the pinned revision with OpenSysML, the SysML Toolkit or a SHACL rule on GitHub
+Actions, GitLab or Jenkins, trigger a pipeline, or just publish an activity feed:
+
+```sh
+git clone https://github.com/Open-MBEE/flexo-change-adapter.git
+cd flexo-change-adapter && npm ci
+npm run adapter -- check --config examples/configuration/feed.json
+```
+
+`check` validates a configuration offline; `run --once` against your own configuration,
+with `FLEXO_TOKEN` in the environment, performs the first observation.
+
 ## Running it for real
 
 For a cluster, the deployment repository's Kubernetes manifests split the same stack into

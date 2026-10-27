@@ -17,7 +17,8 @@ own documentation. This site is the map.
 - **[Services](services/README.md)** — every service: Layer 1, Store, Authentication,
   the SysML v2 API, GraphQL, the Layer 0 dashboard and the deployment manifests.
 - **[Clients and tools](tools/README.md)** — the git-style CLI, the MCP servers, the Python
-  client, the SysML v2 Web Modeler, and the libraries and integrations around them.
+  client, the SysML v2 Web Modeler, the Change Adapter that connects a branch to CI, and the
+  libraries and integrations around them.
 - **[Community](community.md)** — where the conversation happens and how to contribute.
 
 ## Two APIs, one store

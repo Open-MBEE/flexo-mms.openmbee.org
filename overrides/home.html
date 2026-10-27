@@ -397,7 +397,8 @@
         and diffs, with SPARQL to read and write and policies deciding who may. On top of
         that one store sit the OMG SysML v2 API and Services, so standard modelling tools get
         real branching and history without knowing what is underneath &mdash; and around it
-        a git-style CLI, MCP servers for AI assistants, Python clients and a web modeler.
+        a git-style CLI, MCP servers for AI assistants, Python clients, a web modeler and a
+        change adapter that hands every commit to CI.
       </p>
       <div class="flexo-hero__actions">
         <a class="flexo-btn flexo-btn--primary" href="{{ 'getting-started/'|url }}">Get started</a>
@@ -432,7 +433,7 @@
 
 <figure class="flexo-pane" id="flexo-pane-tools" role="tabpanel" aria-labelledby="flexo-tab-tools">
 <svg viewBox="0 0 560 340" role="img" aria-labelledby="flexo-fig-tools-title" class="fig"><title id="flexo-fig-tools-title">The clients and tools around Flexo: the CLI, MCP servers, Python clients, the SysML v2 Web Modeler, SysIDE and the Jama SDK, all speaking to the Layer 1 or SysML v2 API</title><defs><marker id="flexo-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="rgba(255,255,255,.75)"/></marker></defs><line x1="228" y1="138" x2="169" y2="74" class="fig-line fig-line--dim"/><line x1="332" y1="138" x2="391" y2="74" class="fig-line fig-line--dim"/><line x1="218" y1="172" x2="142" y2="172" class="fig-line fig-line--dim"/><line x1="342" y1="172" x2="418" y2="172" class="fig-line fig-line--dim"/><line x1="228" y1="206" x2="168" y2="272" class="fig-line fig-line--dim"/><line x1="332" y1="206" x2="392" y2="272" class="fig-line fig-line--dim"/><circle cx="280" cy="172" r="62" class="fig-core"/><text x="280" y="166" text-anchor="middle" class="fig-h">Flexo</text><text x="280" y="184" text-anchor="middle" class="fig-s">Layer 1 API</text><text x="280" y="198" text-anchor="middle" class="fig-s">SysML v2 API</text><rect x="38" y="40" width="144" height="44" rx="6" class="fig-box"/><text x="110.0" y="59.0" text-anchor="middle" class="fig-t">Flexo CLI</text><text x="110.0" y="74.0" text-anchor="middle" class="fig-s">push, pull, branch, merge</text><rect x="378" y="40" width="144" height="44" rx="6" class="fig-box"/><text x="450.0" y="59.0" text-anchor="middle" class="fig-t">MCP servers</text><text x="450.0" y="74.0" text-anchor="middle" class="fig-s">for AI assistants</text><rect x="0" y="150" width="144" height="44" rx="6" class="fig-box"/><text x="72.0" y="169.0" text-anchor="middle" class="fig-t">Python</text><text x="72.0" y="184.0" text-anchor="middle" class="fig-s">SysML v2 client · flexo_syside</text><rect x="416" y="150" width="144" height="44" rx="6" class="fig-box"/><text x="488.0" y="169.0" text-anchor="middle" class="fig-t">Web Modeler</text><text x="488.0" y="184.0" text-anchor="middle" class="fig-s">SysML v2 in the browser</text><rect x="38" y="262" width="144" height="44" rx="6" class="fig-box"/><text x="110.0" y="281.0" text-anchor="middle" class="fig-t">SysIDE</text><text x="110.0" y="296.0" text-anchor="middle" class="fig-s">textual SysML v2 in and out</text><rect x="378" y="262" width="144" height="44" rx="6" class="fig-box"/><text x="450.0" y="281.0" text-anchor="middle" class="fig-t">Jama · PR Manager</text><text x="450.0" y="296.0" text-anchor="middle" class="fig-s">requirements · model reviews</text></svg>
-<figcaption><span>A git-style CLI, MCP servers for AI assistants, Python, and a web modeler.</span> <a href="{{ 'tools/'|url }}">Clients and tools</a></figcaption>
+<figcaption><span>A git-style CLI, MCP servers for AI assistants, Python, a web modeler, and a change adapter into CI.</span> <a href="{{ 'tools/'|url }}">Clients and tools</a></figcaption>
 </figure>
 
 <figure class="flexo-pane" id="flexo-pane-auth" role="tabpanel" aria-labelledby="flexo-tab-auth">
@@ -530,8 +531,8 @@
       <a class="flexo-arch__layer" href="{{ 'tools/'|url }}">
         <span class="flexo-arch__tier">Clients and tools</span>
         <span class="flexo-arch__title">People and programs</span>
-        <span class="flexo-arch__label">The CLI, MCP servers, Python clients, the web modeler, and any tool built to the SysML v2 API.</span>
-        <span class="flexo-arch__parts"><code>flexo-cli-client</code> &middot; <code>flexo-mms-layer1-mcp</code> &middot; <code>sysmlv2-python-client</code> &middot; <code>sysmlv2-web-modeler</code></span>
+        <span class="flexo-arch__label">The CLI, MCP servers, Python clients, the web modeler, the change adapter that drives CI, and any tool built to the SysML v2 API.</span>
+        <span class="flexo-arch__parts"><code>flexo-cli-client</code> &middot; <code>flexo-mms-layer1-mcp</code> &middot; <code>sysmlv2-python-client</code> &middot; <code>sysmlv2-web-modeler</code> &middot; <code>flexo-change-adapter</code></span>
       </a>
       <a class="flexo-arch__layer" href="{{ 'services/sysmlv2/'|url }}">
         <span class="flexo-arch__tier">Layer 2</span>
@@ -633,6 +634,12 @@
       <h3>SysML v2 Web Modeler</h3>
       <p>Graphical rendering and textual editing of SysML v2 in the browser, against any
       SysML v2 API, standalone or embedded in JupyterLab.</p>
+    </a>
+    <a class="flexo-card" href="{{ 'tools/change-adapter/'|url }}">
+      <h3>Flexo Change Adapter</h3>
+      <p>Every commit on a branch, pinned with a lock and handed to GitHub Actions, GitLab or
+      Jenkins &mdash; validated with OpenSysML, the SysML Toolkit or SHACL, with the evidence
+      kept.</p>
     </a>
     <a class="flexo-card" href="{{ 'tools/libraries/'|url }}">
       <h3>Libraries and integrations</h3>
