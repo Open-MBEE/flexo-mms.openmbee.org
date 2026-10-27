@@ -25,6 +25,12 @@ own repository under [Open-MBEE on GitHub](https://github.com/Open-MBEE).
 | [flexo_syside](python.md#flexo_syside) | SysML v2 textual notation ↔ Flexo, via SysIDE | [flexo_syside](https://github.com/Open-MBEE/flexo_syside) |
 | [Jama SDK](libraries.md#jama-sdk) | Requirements data from Jama stored in Flexo MMS | [flexo-mms-jama-sdk](https://github.com/Open-MBEE/flexo-mms-jama-sdk) |
 
+## Continuous integration
+
+| Tool | Talks to | Repository |
+| --- | --- | --- |
+| [Flexo Change Adapter](change-adapter.md) | Layer 1: polls a branch, pins each observed commit with a lock, and hands it to GitHub Actions, GitLab or Jenkins for validation | [flexo-change-adapter](https://github.com/Open-MBEE/flexo-change-adapter) |
+
 ## In the browser
 
 | Tool | Talks to | Repository |

@@ -33,6 +33,13 @@ collection and data generator for load-testing a [SysML v2 API](../services/sysm
 deployment: it generates a large model, feeds it through the Collection Runner from a CSV,
 and times project creation, commits and element retrieval.
 
+## Continuous integration
+
+The [Flexo Change Adapter](change-adapter.md) is the bridge from a Flexo branch to a CI
+system: it polls [Layer 1](../services/layer1.md), records each commit it sees, and runs
+OpenSysML, the SysML Toolkit or a SHACL rule against that exact revision on GitHub Actions,
+GitLab or Jenkins. It has a page of its own.
+
 ## Modelling tool integrations
 
 Any tool that implements the OMG Systems Modeling API and Services can use Flexo's

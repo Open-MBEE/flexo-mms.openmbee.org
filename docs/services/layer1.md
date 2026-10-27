@@ -58,6 +58,13 @@ resource, with permissions inheriting down from org to repo to branch. A deploym
 respond to a denied request with 404 so an unprivileged caller cannot tell whether the
 resource exists.
 
+## Who talks to it
+
+The [Flexo CLI](../tools/cli.md), the [Layer 1 MCP server](../tools/mcp.md#layer-1-mcp-server)
+and the [Flexo Change Adapter](../tools/change-adapter.md) — which polls a branch and pins
+each commit it observes with a lock before handing it to CI — speak to this API directly, as
+does the [SysML v2 API](sysmlv2.md) on behalf of every SysML v2 tool.
+
 ## Configuration
 
 Layer 1 is configured by environment variables — the quadstore's query, update and

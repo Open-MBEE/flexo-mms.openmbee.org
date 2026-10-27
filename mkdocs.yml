@@ -106,5 +106,6 @@ nav:
       - MCP servers: tools/mcp.md
       - Python: tools/python.md
       - SysML v2 Web Modeler: tools/web-modeler.md
+      - Flexo Change Adapter: tools/change-adapter.md
       - Libraries and integrations: tools/libraries.md
   - Community: community.md
