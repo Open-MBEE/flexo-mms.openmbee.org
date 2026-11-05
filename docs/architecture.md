@@ -13,6 +13,7 @@ flowchart TB
     py[Python clients]
     mcp[MCP servers]
     modeler[SysML v2 Web Modeler]
+    adapter[Change Adapter → CI]
     apps[Modelling tools and integrations]
   end
 
@@ -40,6 +41,7 @@ flowchart TB
   cli --> layer1
   mcp --> layer1
   py --> layer1
+  adapter --> layer1
   sysml --> layer1
   graphql --> quad
   clients -. login .-> auth
@@ -104,8 +106,9 @@ Above the APIs are the things people and programs use: the git-style
 [Flexo CLI](tools/cli.md) with its SysML v2 plugin, [MCP servers](tools/mcp.md) that put
 either API in front of an AI assistant, [Python](tools/python.md) clients, the
 [SysML v2 Web Modeler](tools/web-modeler.md) for graphical rendering and textual editing in
-a browser, and [libraries and integrations](tools/libraries.md) such as the Jama SDK and
-the SysIDE bridge.
+a browser, the [Flexo Change Adapter](tools/change-adapter.md) that watches a Layer 1 branch
+and hands each observed commit to GitHub Actions, GitLab or Jenkins for validation, and
+[libraries and integrations](tools/libraries.md) such as the Jama SDK and the SysIDE bridge.
 
 ## Deployment shape
 
