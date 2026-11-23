@@ -6,13 +6,10 @@
 {% block extrahead %}
   {{ super() }}
   <style>
+    /* The hero is the brand's dark blue in both schemes: the ground the logo is drawn for. */
     :root {
-      --flexo-hero-from: #00463f;
-      --flexo-hero-to:   #00796b;
-    }
-    [data-md-color-scheme="slate"] {
-      --flexo-hero-from: #06201d;
-      --flexo-hero-to:   #00463f;
+      --flexo-hero-from: var(--openmbee-dark-blue);
+      --flexo-hero-to:   #2a1d5c;
     }
 
     .flexo-hero {
@@ -54,7 +51,7 @@
       color: #fff;
       font-size: 1.9rem;
       line-height: 1.2;
-      font-weight: 700;
+      font-weight: 400;
       margin: 0 0 .7rem;
     }
     .flexo-hero__lede {
@@ -81,14 +78,15 @@
       transition: background-color .2s, color .2s, border-color .2s;
     }
     .flexo-btn--primary {
-      background: #fff;
-      color: var(--flexo-hero-from);
+      background: var(--openmbee-light-blue);
+      border-color: var(--openmbee-light-blue);
+      color: var(--openmbee-dark-blue);
     }
     .flexo-btn:focus,
     .flexo-btn:hover {
-      background: var(--md-accent-fg-color);
-      border-color: var(--md-accent-fg-color);
-      color: #fff;
+      background: #fff;
+      border-color: #fff;
+      color: var(--openmbee-dark-blue);
     }
     .flexo-hero__meta {
       font-size: .66rem;
@@ -149,23 +147,23 @@
     .fig .fig-c { font-size: 11px; }
     .fig .fig-s { font-size: 10px; opacity: .78; }
     .fig .fig-eyebrow { font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; opacity: .72; }
-    .fig .fig-t--feature { fill: #80cbc4; }
+    .fig .fig-t--feature { fill: var(--openmbee-grey); }
     .fig .fig-panel { fill: rgba(255, 255, 255, .06); stroke: rgba(255, 255, 255, .3); }
     .fig .fig-box { fill: rgba(255, 255, 255, .12); stroke: rgba(255, 255, 255, .55); stroke-width: 1.2; }
     .fig .fig-node { fill: rgba(255, 255, 255, .14); stroke: rgba(255, 255, 255, .7); stroke-width: 1.2; }
-    .fig .fig-node--lit { fill: rgba(255, 224, 130, .16); stroke: #ffe082; }
+    .fig .fig-node--lit { fill: rgba(100, 221, 250, .16); stroke: var(--openmbee-light-blue); }
     .fig .fig-chip { fill: rgba(255, 255, 255, .14); stroke: rgba(255, 255, 255, .45); }
-    .fig .fig-tag { fill: #ffe082; stroke: none; }
-    .fig .fig-tag + text { fill: #263238; }
+    .fig .fig-tag { fill: var(--openmbee-light-blue); stroke: none; }
+    .fig .fig-tag + text { fill: var(--openmbee-dark-blue); }
     .fig .fig-core { fill: rgba(255, 255, 255, .18); stroke: #fff; stroke-width: 2; }
     .fig .fig-line { fill: none; stroke: rgba(255, 255, 255, .75); stroke-width: 1.5; }
     .fig .fig-line--dim { stroke: rgba(255, 255, 255, .4); }
-    .fig .fig-line--hl { stroke: #ffe082; }
+    .fig .fig-line--hl { stroke: var(--openmbee-light-blue); }
     .fig .fig-branch { fill: none; stroke: #fff; stroke-width: 2.5; }
-    .fig .fig-branch--feature { stroke: #80cbc4; }
+    .fig .fig-branch--feature { stroke: var(--openmbee-grey); }
     .fig .fig-commit { fill: #fff; stroke: var(--flexo-hero-to); stroke-width: 2.5; }
-    .fig .fig-commit--feature { fill: #80cbc4; }
-    .fig .fig-commit--hl { fill: #ffe082; }
+    .fig .fig-commit--feature { fill: var(--openmbee-grey); }
+    .fig .fig-commit--hl { fill: var(--openmbee-light-blue); }
     .flexo-showcase__tabs {
       display: flex;
       flex-wrap: wrap;
@@ -214,7 +212,7 @@
       font-size: .64rem;
       letter-spacing: .1em;
       text-transform: uppercase;
-      color: var(--md-primary-fg-color);
+      color: var(--md-accent-fg-color);
       font-weight: 700;
       margin: 0 0 .4rem;
     }
@@ -260,7 +258,7 @@
       font-size: .84rem;
       font-weight: 700;
       line-height: 1.3;
-      color: var(--md-primary-fg-color);
+      color: var(--md-accent-fg-color);
     }
     .flexo-arch__label {
       display: block;

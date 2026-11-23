@@ -1,0 +1,57 @@
+/* The OpenMBEE brand (https://www.openmbee.org/brand.html) on the theme's colour slots.
+   The typeface, ABeeZee, is set in mkdocs.yml. */
+
+:root {
+  --openmbee-dark-blue:  #10052F;
+  --openmbee-light-blue: #64DDFA;
+  --openmbee-grey:       #D6D6D6;
+  /* Light blue darkened until it reads as text on white, as on openmbee.org. */
+  --openmbee-light-blue-ink: #0a6f8c;
+}
+
+[data-md-color-primary="custom"] {
+  --md-primary-fg-color:        var(--openmbee-dark-blue);
+  --md-primary-fg-color--light: #2a1d5c;
+  --md-primary-fg-color--dark:  var(--openmbee-dark-blue);
+  --md-primary-bg-color:        #fff;
+  --md-primary-bg-color--light: var(--openmbee-grey);
+}
+
+[data-md-color-accent="custom"] {
+  --md-accent-fg-color:              var(--openmbee-light-blue-ink);
+  --md-accent-fg-color--transparent: rgba(100, 221, 250, .18);
+}
+
+[data-md-color-scheme="default"] {
+  --md-typeset-a-color: var(--openmbee-light-blue-ink);
+  --md-footer-bg-color: var(--openmbee-dark-blue);
+}
+
+/* 256 is the dark blue's hue, so the slate scheme's surfaces are shades of it. */
+[data-md-color-scheme="slate"] {
+  --md-hue: 256;
+  --md-default-bg-color: var(--openmbee-dark-blue);
+  --md-typeset-a-color:  var(--openmbee-light-blue);
+  --md-accent-fg-color:  var(--openmbee-light-blue);
+  --md-footer-bg-color:  #0a031f;
+}
+
+/* ABeeZee has one weight, Regular; headings use it rather than a synthesised bold. */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4 {
+  font-weight: 400;
+}
+.md-typeset h1 {
+  color: var(--md-default-fg-color);
+}
+
+/* The icon is fine line work: the theme's 1.2rem is too small for it to read. */
+.md-header__button.md-logo {
+  padding: .2rem;
+}
+.md-header__button.md-logo img {
+  width: 1.8rem;
+  height: 1.8rem;
+}
