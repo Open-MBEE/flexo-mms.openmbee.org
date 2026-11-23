@@ -28,23 +28,30 @@ theme:
     - search.highlight
     - search.suggest
     - toc.follow
+  # The OpenMBEE brand (https://www.openmbee.org/brand.html): the icon and favicon are the
+  # guide's own files, the colours are set in overrides/stylesheets/brand.css.
+  logo: assets/brand/openmbee-icon.svg
+  favicon: assets/brand/favicon.svg
+  font:
+    text: ABeeZee
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: teal
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: teal
-      accent: teal
+      primary: custom
+      accent: custom
       toggle:
         icon: material/weather-sunny
         name: Switch to light mode
 
 extra_css:
+  - stylesheets/brand.css
   - stylesheets/nav-menu.css
   - stylesheets/footer.css
 
