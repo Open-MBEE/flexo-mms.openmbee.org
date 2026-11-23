@@ -33,6 +33,9 @@
   --md-default-bg-color: var(--openmbee-dark-blue);
   --md-typeset-a-color:  var(--openmbee-light-blue);
   --md-accent-fg-color:  var(--openmbee-light-blue);
+  /* Text on the accent, e.g. the hovered back-to-top button: white does not read on light blue. */
+  --md-accent-bg-color:  var(--openmbee-dark-blue);
+  --md-accent-bg-color--light: rgba(16, 5, 47, .7);
   --md-footer-bg-color:  #0a031f;
 }
 
